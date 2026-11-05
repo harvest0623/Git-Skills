@@ -6,11 +6,11 @@
 
 | 章节 | 文件 | 主要内容 |
 | --- | --- | --- |
-| 第一章 | [01-Git核心概念与底层原理.md](./01-Git核心概念与底层原理.md) | 三大区域、Git 对象模型、HEAD/分支/tag、.git 目录、配置管理 |
-| 第二章 | [02-分支管理与合并策略.md](./02-分支管理与合并策略.md) | 分支操作、merge/rebase/cherry-pick、冲突解决、Git Flow 等团队工作流 |
-| 第三章 | [03-提交历史与撤销操作.md](./03-提交历史与撤销操作.md) | git log 高级用法、reset/revert/amend、reflog 找回丢失提交、bisect 排错 |
+| 第一章 | [01-Git核心概念与底层原理.md](./01-Git核心概念与底层原理.md) | 三大区域、Git 对象模型、HEAD/分支/tag、.git 目录、配置管理、修订语法 |
+| 第二章 | [02-分支管理与合并策略.md](./02-分支管理与合并策略.md) | 分支操作、merge/rebase（含 --onto）与 cherry-pick、fixup/autosquash、range-diff、冲突解决、Git Flow 等团队工作流 |
+| 第三章 | [03-提交历史与撤销操作.md](./03-提交历史与撤销操作.md) | git log 高级用法、reset/revert/amend、交互式分块暂存、reflog 找回丢失提交、bisect 自动化、rerere、blame 忽略 |
 | 第四章 | [04-远程协作与GitHub.md](./04-远程协作与GitHub.md) | 远程仓库管理、SSH 配置、Fork/PR 流程、GitHub Actions、GitHub Pages |
-| 第五章 | [05-高级技巧与效率提升.md](./05-高级技巧与效率提升.md) | alias、stash、hooks、worktree、submodule、LFS、历史清理等进阶玩法 |
+| 第五章 | [05-高级技巧与效率提升.md](./05-高级技巧与效率提升.md) | alias、stash（分块/保留暂存区）、hooks、worktree、submodule、LFS、历史清理等进阶玩法 |
 | 第六章 | [06-Git面试考点与命令速查.md](./06-Git面试考点与命令速查.md) | 高频面试题详解 + 按场景分类的命令速查表 |
 | 第七章 | [07-常见错误与排查指南.md](./07-常见错误与排查指南.md) | 高频报错「现象→原因→解决」大全、疑难杂症排查套路 |
 | 第八章 | [08-GitHub深度功能与协作规范.md](./08-GitHub深度功能与协作规范.md) | Projects/Codespaces/Dependabot/Security、提交信息与 Code Review 规范 |
@@ -40,6 +40,12 @@ git bisect start                         # 二分定位引入 bug 的提交
 git worktree add ../release v2.0         # 同时检出多个分支到不同目录
 git clone --filter=blob:none --sparse <url>  # 按需克隆大仓库
 git filter-repo --path '*.zip' --invert-paths # 从历史中抹掉大文件
+git add -p                                # 交互式分块暂存
+git commit --fixup <commit-id>            # 为旧提交准备修复
+git rebase -i --autosquash <commit-id>^   # 自动归位 fixup 提交
+git range-diff main feature@{1} feature   # 对比改写前后的分支
+git rebase --onto main old-base feature   # 把一段提交搬到新基底
+git bisect run ./test.sh                  # 脚本自动二分定位
 ```
 
 ## 📝 注意事项

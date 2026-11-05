@@ -218,6 +218,9 @@ git commit --amend -m "new"             # 修改最近提交
 git diff                                # 工作区改动
 git diff --cached                       # 暂存区改动
 git show <commit-id>                    # 查看某次提交
+git add -p                              # 交互式分块暂存
+git commit --fixup <commit-id>          # 为旧提交准备修复
+git rebase -i --autosquash <commit-id>^ # 自动归位 fixup 提交
 ```
 
 ### 分支与标签
@@ -248,7 +251,9 @@ git restore <file>                      # 还原工作区文件
 git restore --staged <file>             # 取消暂存
 git clean -fd                           # 清理未跟踪文件
 git blame <file>                        # 逐行追责
+git blame --ignore-rev <rev> <file>     # 排除格式化提交
 git bisect start ... reset              # 二分定位 bug
+git bisect run ./test.sh                # 脚本自动二分
 ```
 
 ### 远程协作
@@ -285,6 +290,9 @@ git bundle create repo.bundle --all     # 离线备份
 git archive -o project.zip HEAD         # 导出当前版本
 git grep "keyword"                      # 仓库内搜索
 git shortlog -sn                        # 按作者统计
+git rebase --onto main old-base feature # 搬移一段提交
+git range-diff main feature@{1} feature # 对比改写前后
+git rerere status                       # 冲突解决复用
 ```
 
 ---

@@ -151,6 +151,40 @@ git show <commit-id>              # 查看某次提交的完整改动
 3. **`.gitignore` 只对未跟踪文件生效**，已被跟踪的文件改动不受 ignore 影响，需先 `git rm --cached <file>` 解除跟踪。
 4. **删除文件要用 `git rm`** 或删除后 `git add -A`，直接删文件 Git 也会标记为 deleted。
 
+## 1.9 修订语法速查（Revision Syntax）
+
+Git 指代提交的方式是一套小型语言，掌握后能少敲很多命令，也能看懂别人给出的范围表达式。
+
+| 写法 | 含义 | 示例 |
+| --- | --- | --- |
+| `HEAD` | 当前提交 | `git show HEAD` |
+| `HEAD^` / `HEAD^1` | 第一个父提交 | `git show HEAD^` |
+| `HEAD^2` | 合并提交的第二个父提交 | 查看被合并进来的分支 |
+| `HEAD~2` | 沿第一父链往前 2 个提交 | `git reset --hard HEAD~2` |
+| `HEAD~2^2` | 组合写法：先往前 2 个，再取第二父 | 复杂历史定位 |
+| `main@{u}` | 当前分支的上游（upstream） | `git log main@{u}..main` |
+| `feature@{1}` | 分支 reflog 中的上一次位置 | `git range-diff main feature@{1} feature` |
+| `:/正则` | 按提交信息搜索最近的匹配提交 | `git show :/fix` |
+| `:path` | 暂存区中的文件版本 | `git show :src/app.js` |
+| `HEAD:path` | 某次提交中的文件版本 | `git show HEAD~3:README.md` |
+| `A..B` | B 可达而 A 不可达的提交集合 | `git log main..feature` |
+| `A...B` | 对称差集（任一侧独有的提交） | `git log --left-right A...B` |
+| `^A` / `--not A` | 排除 A 可达的提交 | `git log B ^A` |
+
+**`..` 与 `...` 在 log 和 diff 中含义不同**，这是最容易踩的坑：
+
+```bash
+# log：集合运算
+git log main..feature          # feature 有、main 没有的提交
+git log main...feature         # 两边各自独有的提交（常配 --left-right）
+
+# diff：端点比较
+git diff main..feature         # 等同于 git diff main feature，只比较两个端点
+git diff main...feature        # 从 merge-base(main, feature) 到 feature 的差异（PR 常用）
+```
+
+> 判断「分支从哪分叉」用 `git merge-base main feature`；想让 diff 只显示「本分支相对分叉点的改动」，用三点写法。
+
 ---
 
 ## ✅ 本章小结
@@ -159,5 +193,6 @@ git show <commit-id>              # 查看某次提交的完整改动
 - 四种对象：blob（文件内容）、tree（目录）、commit（提交）、tag（标签）。
 - 分支是指针、HEAD 是当前所在位置、reflog 是操作后悔药。
 - 配置优先级：仓库级 > 用户级 > 系统级。
+- 修订语法：`..` 看集合差、`...` 看分叉点差异、`@{u}` 指上游、`:path` 指暂存区文件。
 
 > 下一章：[02-分支管理与合并策略.md](./02-分支管理与合并策略.md)，学习分支的进阶玩法和团队工作流。
